@@ -1,0 +1,28 @@
+@page "/sendmessage"
+@rendermode InteractiveServer
+@inject KafkaProducerService KafkaProducer
+
+<h3>Send Kafka Message</h3>
+
+<input @bind="message" placeholder="Enter message" />
+<button @onclick ="SendAMessage">Send</button>
+<br/>
+<input @bind="output" />
+@code
+{
+    private string message;
+    private string output = "No message yet";
+
+    private async Task SendAMessage()
+    {
+        output = "Send Message called";
+        await KafkaProducer.ProduceMessageAsync(message);
+        message = string.Empty;
+    }
+    public void OnClickMethod()
+    {
+        // Action to be performed on click
+        output = "Send Message called";
+        Console.WriteLine("Button clicked!");
+    }
+}
