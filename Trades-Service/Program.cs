@@ -17,8 +17,7 @@ class Program
         using (var consumer = new ConsumerBuilder<Ignore, string>(config).Build())
         {
             // Subscribe to the topic produced by the Blazor app
-            consumer.Subscribe("test-topic");  // Replace with your Kafka topic name
-
+            consumer.Subscribe("test-topic"); 
             Console.WriteLine("Consuming Kafka messages...");
 
             try
@@ -52,7 +51,6 @@ class Program
     // Example business logic to process the event from Blazor app
     private static Task ProcessEvent(string message)
     {
-        // Add your custom business logic here
         Console.WriteLine($"Processing event: {message}");
 
         // Simulate a task with delay
