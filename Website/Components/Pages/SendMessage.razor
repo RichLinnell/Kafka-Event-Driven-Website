@@ -1,17 +1,56 @@
 @page "/sendmessage"
 @rendermode InteractiveServer
 @inject KafkaProducerService KafkaProducer
+@inject KafkaConsumerService KafkaConsumer
 
 <h3>Send Kafka Message</h3>
 
 <input @bind="message" placeholder="Enter message" />
-<button @onclick ="SendAMessage">Send</button>
-<br/>
+<button @onclick="SendAMessage">Send</button>
+<br />
 <input @bind="output" />
+<hr/>
+<table class="table" >
+    <thead>
+        <tr>
+            <th>Ticker</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var item in prices)
+{
+  <tr @key=item>
+    <td>@item.Key</td>
+    <td>@item.Value</td>
+  </tr>
+}
+    </tbody>
+</table>
+
+
 @code
 {
-    private string message;
+    private string message = "";
     private string output = "No message yet";
+
+    private Dictionary<string, decimal> prices = new Dictionary<string, decimal>();
+    private System.Timers.Timer _timer;
+    private Random random = new Random();
+
+    protected override void OnInitialized()
+    {
+        prices.Add("MSFT", 100);
+        prices.Add("APPL", 127);
+        prices.Add("IBM", 450);
+        _timer = new System.Timers.Timer(500);
+        _timer.Elapsed += async (s, e) =>
+        {
+            DataCycle();
+            await InvokeAsync(StateHasChanged);
+        };
+        _timer.Enabled = true;
+    }
 
     private async Task SendAMessage()
     {
@@ -25,4 +64,12 @@
         output = "Send Message called";
         Console.WriteLine("Button clicked!");
     }
+
+    private void DataCycle()
+    {
+        foreach(var key in prices.Keys){
+            prices[key] = prices[key] * (Decimal)(1+(random.NextDouble()-.5)/10);
+        }
+    }
+
 }

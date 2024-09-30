@@ -8,7 +8,7 @@ class Program
     {
         var config = new ConsumerConfig
         {
-            GroupId = "microservice-consumer-group",
+            GroupId = "trades-microservice-consumer-group",
             BootstrapServers = "localhost:9092",
             AutoOffsetReset = AutoOffsetReset.Earliest,  // Start from the earliest message if no offset is found
             EnableAutoCommit = false,  // We will commit manually after processing
@@ -49,11 +49,14 @@ class Program
     }
 
     // Example business logic to process the event from Blazor app
-    private static Task ProcessEvent(string message)
+    private static async Task ProcessEvent(string message)
     {
         Console.WriteLine($"Processing event: {message}");
 
         // Simulate a task with delay
-        return Task.Delay(1000);
+        await Task.Delay(1000);
+
+        var producerService = new KafkaProducerService(); //Modify to use DI
+        await producerService.ProduceMessageAsync($"Processed: {message}");
     }
 }

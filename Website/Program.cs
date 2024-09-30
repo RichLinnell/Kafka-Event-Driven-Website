@@ -5,7 +5,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
-    .Services.AddSingleton<KafkaProducerService>();
+    .Services
+    .AddSingleton<KafkaProducerService>()
+    .AddSingleton<KafkaConsumerService>();
+
 
 var app = builder.Build();
 
